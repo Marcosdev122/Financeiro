@@ -1,0 +1,3 @@
+ALTER TABLE movimentacoes
+ADD COLUMN descricao VARCHAR(255) NULL DEFAULT NULL
+AFTER categoria;

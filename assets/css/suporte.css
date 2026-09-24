@@ -1,0 +1,548 @@
+/* =========================================================
+   CENTRAL DE SUPORTE — layout exclusivo (não usa sidebar)
+========================================================= */
+
+.suporte-desk {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse 70% 40% at 0% 0%, rgba(37, 99, 235, 0.1), transparent 55%),
+        radial-gradient(ellipse 50% 35% at 100% 100%, rgba(15, 23, 42, 0.06), transparent 50%),
+        var(--background, #eef2f6);
+    color: var(--text, #111827);
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.suporte-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    background: #172235;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.suporte-topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.suporte-topbar-icone {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(59, 130, 246, 0.22);
+    color: #93c5fd;
+    font-size: 1.2rem;
+}
+
+.suporte-topbar-brand strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.suporte-topbar-brand small {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.suporte-topbar-acoes {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.suporte-link-suave,
+.suporte-btn-sair {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.suporte-link-suave {
+    color: #cbd5e1;
+    background: transparent;
+}
+
+.suporte-link-suave:hover {
+    background: rgba(148, 163, 184, 0.12);
+    color: #fff;
+}
+
+.suporte-btn-sair {
+    color: #fecaca;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.suporte-btn-sair:hover {
+    background: rgba(239, 68, 68, 0.22);
+    color: #fff;
+}
+
+.suporte-main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 1.75rem 1.25rem 3rem;
+}
+
+.suporte-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.35rem;
+}
+
+.suporte-toolbar h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.suporte-toolbar p {
+    margin: 0;
+    color: var(--text-secondary, #6b7280);
+    font-size: 0.95rem;
+}
+
+.suporte-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 180px;
+}
+
+.suporte-filtro label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary, #6b7280);
+}
+
+.suporte-filtro select {
+    appearance: none;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--border, #e5e7eb);
+    background: var(--surface, #fff);
+    color: var(--text);
+    font-size: 0.92rem;
+    outline: none;
+}
+
+.suporte-filtro select:focus {
+    border-color: var(--primary, #2563eb);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.suporte-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.35rem;
+}
+
+.suporte-kpi {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-top: 3px solid transparent;
+}
+
+.suporte-kpi span {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary, #6b7280);
+    font-weight: 600;
+}
+
+.suporte-kpi strong {
+    font-size: 1.75rem;
+    line-height: 1.1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.suporte-kpi-aberto {
+    border-top-color: #f59e0b;
+}
+
+.suporte-kpi-atende {
+    border-top-color: #3b82f6;
+}
+
+.suporte-kpi-ok {
+    border-top-color: #22c55e;
+}
+
+.suporte-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.suporte-lista-vazio {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-secondary, #6b7280);
+    background: var(--surface, #fff);
+    border: 1px dashed var(--border, #e5e7eb);
+    border-radius: 14px;
+}
+
+.suporte-ticket {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.85rem 1.25rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.suporte-ticket:hover {
+    border-color: rgba(37, 99, 235, 0.35);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.suporte-ticket-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.55rem;
+}
+
+.suporte-protocolo {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    font-size: 0.98rem;
+}
+
+.suporte-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.suporte-badge.aberto {
+    background: rgba(245, 158, 11, 0.14);
+    color: #b45309;
+}
+
+.suporte-badge.atendimento {
+    background: rgba(59, 130, 246, 0.14);
+    color: #1d4ed8;
+}
+
+.suporte-badge.resolvido {
+    background: rgba(34, 197, 94, 0.14);
+    color: #15803d;
+}
+
+.suporte-ticket-data {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.suporte-ticket-user {
+    margin-bottom: 0.45rem;
+}
+
+.suporte-ticket-user strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.suporte-ticket-user span {
+    font-size: 0.82rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.suporte-ticket-motivo {
+    margin: 0 0 0.25rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.suporte-ticket-detalhe {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #6b7280);
+    line-height: 1.45;
+    max-width: 58ch;
+}
+
+.suporte-ticket-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-self: center;
+}
+
+.suporte-ticket-acoes button {
+    border: 1px solid var(--border, #e5e7eb);
+    background: var(--surface-soft, #f8fafc);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.suporte-ticket-acoes button:hover {
+    border-color: var(--primary, #2563eb);
+    color: var(--primary, #2563eb);
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.suporte-ticket-acoes button.is-ativo {
+    border-color: transparent;
+    color: #fff;
+}
+
+.suporte-ticket-acoes button[data-status="Aberto"].is-ativo {
+    background: #d97706;
+}
+
+.suporte-ticket-acoes button[data-status="Em atendimento"].is-ativo {
+    background: #2563eb;
+}
+
+.suporte-ticket-acoes button[data-status="Resolvido"].is-ativo {
+    background: #16a34a;
+}
+
+@media (max-width: 720px) {
+    .suporte-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .suporte-ticket {
+        grid-template-columns: 1fr;
+    }
+
+    .suporte-ticket-acoes {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-self: stretch;
+    }
+
+    .suporte-ticket-acoes button {
+        flex: 1;
+    }
+}
+
+html[data-tema="escuro"] .suporte-desk {
+    background:
+        radial-gradient(ellipse 70% 40% at 0% 0%, rgba(59, 130, 246, 0.14), transparent 55%),
+        var(--background);
+}
+
+html[data-tema="escuro"] .suporte-topbar {
+    background: #0b1220;
+}
+
+html[data-tema="escuro"] .suporte-badge.aberto {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+html[data-tema="escuro"] .suporte-badge.atendimento {
+    background: rgba(59, 130, 246, 0.22);
+    color: #93c5fd;
+}
+
+html[data-tema="escuro"] .suporte-badge.resolvido {
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+}
+
+.suporte-desk .btn-assistente-flutuante {
+    display: none !important;
+}
+.tickets-login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background:
+        radial-gradient(ellipse at top, rgba(59, 130, 246, 0.12), transparent 55%),
+        var(--background, #eef2f6);
+}
+
+.tickets-login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+}
+
+.tickets-login-icone {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(59, 130, 246, 0.12);
+    color: #2563eb;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+}
+
+.tickets-login-card h1 {
+    font-size: 1.35rem;
+    margin: 0 0 0.35rem;
+    color: var(--text);
+}
+
+.tickets-login-voltar {
+    display: block;
+    text-align: center;
+    margin-top: 1.25rem;
+    color: var(--text-secondary, #6b7280);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.tickets-login-voltar:hover {
+    color: var(--primary, #2563eb);
+}
+
+.suporte-zap-painel {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border, #e5e7eb);
+}
+
+.suporte-resposta-texto {
+    width: 100%;
+    min-height: 72px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+    background: var(--input-bg, #fff);
+    color: var(--text);
+    resize: vertical;
+}
+
+.btn-whatsapp-resposta {
+    background: #16a34a;
+    border-color: transparent;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 8px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    align-self: flex-start;
+}
+
+.btn-whatsapp-resposta:hover {
+    background: #15803d;
+}
+
+/* =========================================================
+   MEUS TICKETS (cliente) — só protocolo/status
+========================================================= */
+.meus-tickets-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.85rem;
+}
+
+.meus-tickets-vazio {
+    grid-column: 1 / -1;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-secondary, #6b7280);
+    background: var(--surface, #fff);
+    border: 1px dashed var(--border, #e5e7eb);
+    border-radius: 12px;
+}
+
+.meus-ticket-card {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.meus-ticket-card-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.meus-ticket-proto {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.meus-ticket-motivo {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.meus-ticket-detalhe {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.meus-ticket-data {
+    font-size: 0.78rem;
+    color: var(--text-secondary, #6b7280);
+}

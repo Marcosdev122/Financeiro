@@ -1,0 +1,3 @@
+ALTER TABLE movimentacoes
+ADD COLUMN atualizado_em DATETIME NULL DEFAULT NULL
+AFTER data;

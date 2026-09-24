@@ -1,0 +1,3 @@
+ALTER TABLE movimentacoes
+ADD COLUMN criado_em DATETIME NULL DEFAULT NULL
+AFTER data;
