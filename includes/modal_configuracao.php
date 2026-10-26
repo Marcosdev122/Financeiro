@@ -35,13 +35,24 @@
                     <small>Filtro inicial do dashboard</small>
                 </span>
             </button>
-            <button type="button" class="config-option" data-opcao="aparencia">
-                <i class="bi bi-palette"></i>
+            <a
+                href="/Financeiro/devedores/index.php"
+                class="config-option config-option-link">
+                <i class="bi bi-person-lines-fill"></i>
                 <span>
-                    <strong>Aparência</strong>
-                    <small>Cores e layout</small>
+                    <strong>Devedores</strong>
+                    <small>Quem está te devendo</small>
                 </span>
-            </button>
+            </a>
+            <a
+                href="/Financeiro/parceladas/index.php"
+                class="config-option config-option-link">
+                <i class="bi bi-credit-card"></i>
+                <span>
+                    <strong>Parceladas</strong>
+                    <small>Compras do cartão</small>
+                </span>
+            </a>
             <button type="button" class="config-option" data-opcao="dados">
                 <i class="bi bi-database"></i>
                 <span>

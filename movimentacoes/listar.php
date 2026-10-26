@@ -111,7 +111,7 @@ while ($movimentacao = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
 
     $celulaCategoria = "
-        <td>
+        <td class=\"col-categoria\" data-label=\"Categoria\">
             {$conteudoCategoria}
         </td>
     ";
@@ -119,12 +119,12 @@ while ($movimentacao = $stmt->fetch(PDO::FETCH_ASSOC)) {
     echo "
         <tr data-tipo='{$movimentacao['tipo']}'>
             {$celulaCategoria}
-            <td class='{$classeValor} valor-tabela'>
+            <td class='{$classeValor} valor-tabela' data-label='Valor'>
                 {$prefixoValor}{$valorFormatado}
             </td>
-            <td>{$dataFormatada}</td>
-            <td class='text-muted col-atualizado'>{$atualizadoFormatado}</td>
-            <td>
+            <td class='col-data' data-label='Data'>{$dataFormatada}</td>
+            <td class='text-muted col-atualizado' data-label='Atualizado'>{$atualizadoFormatado}</td>
+            <td class='col-acoes' data-label='Ações'>
                 <div class='lista-acoes-botoes'>
                     <button
                         class='btn btn-acao-lista btn-acao-editar btnEditarMovimentacao'

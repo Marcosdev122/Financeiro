@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../config/conexao.php";
 require_once __DIR__ . "/../config/auth.php";
 require_once __DIR__ . "/../includes/movimentacao_regras.php";
+require_once __DIR__ . "/../includes/parcelas.php";
 
 header("Content-Type: application/json; charset=utf-8");
 
@@ -485,6 +486,21 @@ try {
                 ':data' => $data,
             ]);
             $importadosDespesa++;
+
+            $parcela = extrairParcelaDaDescricao($descricao);
+
+            if ($parcela !== null) {
+                registrarCompraParcelada(
+                    $conn,
+                    $usuarioId,
+                    $descricao,
+                    $categoria,
+                    $valor,
+                    $data,
+                    $parcela["atual"],
+                    $parcela["total"]
+                );
+            }
         }
 
         $importados++;

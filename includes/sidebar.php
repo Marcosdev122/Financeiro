@@ -5,6 +5,7 @@ $scriptAtual = $_SERVER['SCRIPT_NAME'] ?? '';
 $ativoDashboard = str_contains($scriptAtual, '/dashboard/');
 $ativoReceitas = str_contains($scriptAtual, '/receitas/');
 $ativoDespesas = str_contains($scriptAtual, '/despesas/');
+$ativoParceladas = str_contains($scriptAtual, '/parceladas/');
 
 ?>
 
@@ -42,6 +43,7 @@ $ativoDespesas = str_contains($scriptAtual, '/despesas/');
                 Despesas
             </a>
         </li>
+
 
     </ul>
 
@@ -85,3 +87,8 @@ $ativoDespesas = str_contains($scriptAtual, '/despesas/');
     </div>
 
 </div>
+
+<button type="button" id="btnToggleSidebar" class="btn-toggle-sidebar" aria-label="Menu">
+    <i class="bi bi-chevron-left"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" hidden></div>

@@ -1,7 +1,7 @@
 <?php 
 
 $conn = new PDO(
-    "mysql:host=localhost;dbname=gestao_financeira;charset=utf8mb4",
+    "mysql:host=localhost;dbname=gestao_financeira",
     "root",
     "Fg25107418#"
 );

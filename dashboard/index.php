@@ -7,6 +7,7 @@ include __DIR__ . "/../includes/sidebar.php";
 ?>
 
 <div class="content">
+    <div class="content-largura">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
@@ -265,6 +266,7 @@ include __DIR__ . "/../includes/sidebar.php";
         </div>
     </div>
 
+    </div>
 </div>
 
 <?php include __DIR__ . "/../includes/footer.php"; ?>

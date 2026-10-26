@@ -30,6 +30,7 @@ $labelMovimentacoes = $ehReceita
     
 
     <div class="content">
+        <div class="content-largura">
 
         <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
             <div>
@@ -42,9 +43,11 @@ $labelMovimentacoes = $ehReceita
                 <button
                     type="button"
                     class="btn btn-outline-secondary btn-filtro-periodo-lista"
-                    id="btnAbrirPeriodoLista">
+                    id="btnAbrirPeriodoLista"
+                    title="Filtrar período">
                     <i class="bi bi-calendar-range"></i>
-                    Filtrar período
+                    <span class="filtro-label-completo">Filtrar período</span>
+                    <span class="filtro-label-curto">Filtro</span>
                 </button>
             </div>
         </div>
@@ -128,7 +131,7 @@ $labelMovimentacoes = $ehReceita
                             <th>Categoria</th>
                             <th class="text-end">Valor</th>
                             <th>Data</th>
-                            <th>Atualizado</th>
+                            <th class="col-atualizado">Atualizado</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -137,6 +140,7 @@ $labelMovimentacoes = $ehReceita
             </div>
         </div>
 
+        </div>
     </div>
 
     <?php include __DIR__ . "/modal_periodo_lista.php"; ?>

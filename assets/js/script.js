@@ -381,6 +381,29 @@ function atualizarResumoMovimentacoes() {
     }
 }
 
+function sincronizarLarguraTabelaMovimentacoes() {
+    const $table = $("#tabelaMovimentacoes");
+    if (!$table.length) {
+        return;
+    }
+
+    $table.find("colgroup").remove();
+    $table.css({
+        width: "100%",
+        minWidth: "100%",
+        maxWidth: "100%"
+    });
+
+    $table.find("th, td").each(function () {
+        this.style.width = "";
+        this.style.minWidth = "";
+        this.style.maxWidth = "";
+    });
+
+    $("#tabelaMovimentacoes_wrapper, #tabelaMovimentacoes_wrapper .dt-container, #tabelaMovimentacoes_wrapper .dt-layout-table")
+        .css({ width: "100%", maxWidth: "100%" });
+}
+
 function carregarMovimentacoes() {
     const tipo = tipoPaginaAtual();
     const periodo = parametrosPeriodoLista();
@@ -407,6 +430,7 @@ function carregarMovimentacoes() {
 
             tabelaMovimentacoes = $("#tabelaMovimentacoes").DataTable({
                 pageLength: 10,
+                autoWidth: false,
                 lengthMenu: [
                     [5, 10, 25, 50],
                     [5, 10, 25, 50]
@@ -426,10 +450,35 @@ function carregarMovimentacoes() {
                     }
                 },
                 order: [[2, "desc"]],
+                columnDefs: [
+                    {
+                        targets: 3,
+                        className: "col-atualizado"
+                    },
+                    {
+                        targets: 1,
+                        className: "text-end text-nowrap"
+                    },
+                    {
+                        targets: 2,
+                        className: "text-nowrap"
+                    },
+                    {
+                        targets: 4,
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                initComplete: function () {
+                    sincronizarLarguraTabelaMovimentacoes();
+                },
                 drawCallback: function () {
                     $("#tabelaMovimentacoes_wrapper").addClass("lista-datatable");
+                    sincronizarLarguraTabelaMovimentacoes();
                 }
             });
+
+            sincronizarLarguraTabelaMovimentacoes();
 
             tabelaMovimentacoes.on("draw", function () {
                 atualizarResumoMovimentacoes();
@@ -1138,44 +1187,50 @@ function carregarGraficoEvolucao() {
 
             const host = document.getElementById("graficoEvolucao");
             const container = host ? host.closest(".chart-container") : null;
+            const mobile = window.matchMedia("(max-width: 768px)").matches;
 
             if (container) {
                 container.classList.add("chart-scroll-y", "chart-container-evolucao");
             }
 
-            // Altura maior quando a faixa negativa é grande, para o scroll mostrar as duas partes
-            const faixa = Math.abs(maxPositivo) + Math.abs(minNegativo);
-            const alturaHost = faixa > 0 && Math.abs(minNegativo) > Math.abs(maxPositivo) * 3
-                ? 640
-                : 520;
-
+            // No PC, altura maior quando a faixa negativa é grande.
+            // No celular, o host preenche o container (CSS) — sem altura inline alta.
             if (host) {
-                host.style.height = alturaHost + "px";
-                host.style.minHeight = alturaHost + "px";
+                if (mobile) {
+                    host.style.height = "";
+                    host.style.minHeight = "";
+                } else {
+                    const faixa = Math.abs(maxPositivo) + Math.abs(minNegativo);
+                    const alturaHost = faixa > 0 && Math.abs(minNegativo) > Math.abs(maxPositivo) * 3
+                        ? 640
+                        : 520;
+                    host.style.height = alturaHost + "px";
+                    host.style.minHeight = alturaHost + "px";
+                }
             }
 
-            const rotacao = meses.length > 12 ? 40 : 0;
+            const rotacao = mobile ? (meses.length > 6 ? 35 : 0) : (meses.length > 12 ? 40 : 0);
 
             graficoEvolucao.setOption({
                 animation: false,
                 grid: {
-                    left: 12,
-                    right: 48,
-                    top: 40,
-                    bottom: 44,
+                    left: mobile ? 8 : 12,
+                    right: mobile ? 16 : 48,
+                    top: mobile ? 24 : 40,
+                    bottom: mobile ? (rotacao ? 56 : 40) : 44,
                     containLabel: true
                 },
                 tooltip: {
                     trigger: "axis",
                     backgroundColor: "rgba(17, 24, 39, 0.92)",
                     borderWidth: 0,
-                    textStyle: { color: "#fff", fontSize: 11 },
+                    textStyle: { color: "#fff", fontSize: mobile ? 11 : 11 },
                     valueFormatter: function (valor) {
                         return formatarMoeda(valor);
                     }
                 },
                 legend: { show: false },
-                dataZoom: dataZoomEcharts(meses.length, 12, "x"),
+                dataZoom: dataZoomEcharts(meses.length, mobile ? 5 : 12, "x"),
                 xAxis: Object.assign(eixoCategoria(meses, rotacao), {
                     axisLine: {
                         onZero: true,
@@ -1183,10 +1238,10 @@ function carregarGraficoEvolucao() {
                     },
                     axisLabel: {
                         color: corEixoGrafico(),
-                        fontSize: 10,
+                        fontSize: mobile ? 9 : 10,
                         rotate: rotacao,
                         hideOverlap: true,
-                        margin: 12
+                        margin: mobile ? 8 : 12
                     }
                 }),
                 yAxis: {
@@ -1201,7 +1256,7 @@ function carregarGraficoEvolucao() {
                     },
                     axisLabel: {
                         color: corEixoGrafico(),
-                        fontSize: 10,
+                        fontSize: mobile ? 9 : 10,
                         hideOverlap: true,
                         formatter: function (valor) {
                             return formatarMoedaEixo(valor);
@@ -1213,13 +1268,13 @@ function carregarGraficoEvolucao() {
                         posicaoLabel: "top",
                         papel: "receita",
                         seriePar: despesasNegativas,
-                        limiarProximo: 800
+                        limiarProximo: mobile ? 999999 : 800
                     }),
                     serieLinhaEcharts("Despesas", despesasNegativas, "#dc2626", {
                         posicaoLabel: "top",
                         papel: "despesa",
                         seriePar: receitas,
-                        limiarProximo: 800
+                        limiarProximo: mobile ? 999999 : 800
                     }),
                     Object.assign(
                         serieMediaEcharts(
@@ -1252,6 +1307,13 @@ function carregarGraficoEvolucao() {
             }, true);
 
             graficoEvolucao.resize();
+            if (mobile) {
+                setTimeout(function () {
+                    if (graficoEvolucao) {
+                        graficoEvolucao.resize();
+                    }
+                }, 120);
+            }
 
             // Centraliza o scroll na linha do zero
             if (container) {
@@ -1480,13 +1542,16 @@ function montarGraficoCategoria(elId, dados, cor, instanciaRef) {
         return null;
     }
 
+    const mobile = window.matchMedia("(max-width: 768px)").matches;
+    const limiteZoom = mobile ? 4 : 6;
+
     chart.setOption({
         animation: false,
         grid: {
-            left: 8,
-            right: 80,
+            left: mobile ? 4 : 8,
+            right: mobile ? 56 : 80,
             top: 8,
-            bottom: 28,
+            bottom: mobile ? 36 : 28,
             containLabel: true
         },
         tooltip: {
@@ -1494,21 +1559,21 @@ function montarGraficoCategoria(elId, dados, cor, instanciaRef) {
             axisPointer: { type: "shadow" },
             backgroundColor: "rgba(17, 24, 39, 0.92)",
             borderWidth: 0,
-            textStyle: { color: "#fff", fontSize: 12 },
+            textStyle: { color: "#fff", fontSize: mobile ? 11 : 12 },
             valueFormatter: function (valor) {
                 return formatarMoeda(valor);
             }
         },
         legend: { show: false },
-        dataZoom: dataZoomEcharts(labels.length, 6, "y"),
+        dataZoom: dataZoomEcharts(labels.length, limiteZoom, "y"),
         xAxis: {
             type: "value",
             min: 0,
             scale: false,
-            splitNumber: 4,
+            splitNumber: mobile ? 3 : 4,
             axisLabel: {
                 color: corEixoGrafico(),
-                fontSize: 10,
+                fontSize: mobile ? 9 : 10,
                 hideOverlap: true,
                 interval: "auto",
                 formatter: function (valor) {
@@ -1527,21 +1592,21 @@ function montarGraficoCategoria(elId, dados, cor, instanciaRef) {
             axisLine: { show: false },
             axisLabel: {
                 color: corLabelGrafico(),
-                fontSize: 12,
-                width: 90,
+                fontSize: mobile ? 10 : 12,
+                width: mobile ? 72 : 90,
                 overflow: "truncate"
             }
         },
         series: [{
             type: "bar",
             data: valores,
-            barWidth: 16,
+            barWidth: mobile ? 12 : 16,
             itemStyle: {
                 color: cor,
                 borderRadius: [0, 6, 6, 0]
             },
             label: {
-                show: true,
+                show: !mobile,
                 position: "right",
                 color: corLabelGrafico(),
                 fontSize: 11,
@@ -1558,6 +1623,11 @@ function montarGraficoCategoria(elId, dados, cor, instanciaRef) {
     }, true);
 
     chart.resize();
+    if (mobile) {
+        setTimeout(function () {
+            chart.resize();
+        }, 120);
+    }
 
     return chart;
 }
@@ -3121,4 +3191,437 @@ function carregarMeusTickets() {
 
 $(function () {
     carregarMeusTickets();
+});
+
+// ========================== SIDEBAR ==========================
+const CHAVE_SIDEBAR = "financeiro-sidebar-recolhido";
+
+function ehMobileSidebar() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+function aplicarSidebarRecolhido(recolhido, salvar) {
+    $("body").toggleClass("sidebar-recolhido", !!recolhido);
+    $("#sidebarOverlay").prop("hidden", !ehMobileSidebar() || !!recolhido);
+
+    if (salvar) {
+        try {
+            localStorage.setItem(CHAVE_SIDEBAR, recolhido ? "1" : "0");
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    setTimeout(function () {
+        $(window).trigger("resize");
+    }, 280);
+}
+
+function inicializarSidebar() {
+    let recolhido;
+
+    try {
+        const salvo = localStorage.getItem(CHAVE_SIDEBAR);
+        if (salvo === "1" || salvo === "0") {
+            recolhido = salvo === "1";
+        } else {
+            recolhido = ehMobileSidebar();
+        }
+    } catch (e) {
+        recolhido = ehMobileSidebar();
+    }
+
+    aplicarSidebarRecolhido(recolhido, false);
+}
+
+$(document).on("click", "#btnToggleSidebar", function () {
+    const recolhido = !$("body").hasClass("sidebar-recolhido");
+    aplicarSidebarRecolhido(recolhido, true);
+});
+
+$(document).on("click", "#sidebarOverlay", function () {
+    aplicarSidebarRecolhido(true, true);
+});
+
+$(document).on("click", ".sidebar-menu a", function () {
+    if (ehMobileSidebar()) {
+        aplicarSidebarRecolhido(true, true);
+    }
+});
+
+$(window).on("resize", function () {
+    $("#sidebarOverlay").prop(
+        "hidden",
+        !ehMobileSidebar() || $("body").hasClass("sidebar-recolhido")
+    );
+});
+
+$(function () {
+    inicializarSidebar();
+});
+
+// ========= DEVEDORES =========
+const BASE_DEVEDORES = "/Financeiro/devedores";
+
+function aplicarMascaraValorDevedor($input, digitos) {
+    digitos = String(digitos || "").replace(/\D/g, "").replace(/^0+/, "").slice(0, 12);
+    $input.data("digitos", digitos);
+
+    if (!digitos) {
+        $input.val("");
+        return;
+    }
+
+    const centavos = Number(digitos) / 100;
+    $input.val(centavos.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    }));
+}
+
+function valorDevedorParaEnvio() {
+    const digitos = $("#devedorValor").data("digitos") || "";
+
+    if (!digitos) {
+        return "";
+    }
+
+    return (Number(digitos) / 100).toFixed(2);
+}
+
+$(document).on("keydown", "#devedorValor", function (evento) {
+    const tecla = evento.key;
+    let digitos = $(this).data("digitos") || "";
+
+    if (tecla === "Backspace") {
+        evento.preventDefault();
+        aplicarMascaraValorDevedor($(this), digitos.slice(0, -1));
+        return;
+    }
+
+    if (/^\d$/.test(tecla)) {
+        evento.preventDefault();
+        aplicarMascaraValorDevedor($(this), digitos + tecla);
+        return;
+    }
+
+    if (tecla.length === 1 && !evento.ctrlKey && !evento.metaKey) {
+        evento.preventDefault();
+    }
+});
+
+function formatarDataDevedor(data) {
+    if (!data) {
+        return "";
+    }
+    const partes = String(data).slice(0, 10).split("-");
+    if (partes.length !== 3) {
+        return data;
+    }
+    return partes[2] + "/" + partes[1] + "/" + partes[0];
+}
+
+let devedoresCarregados = [];
+
+function carregarDevedores() {
+    $.ajax({
+        url: BASE_DEVEDORES + "/listar.php",
+        type: "GET",
+        dataType: "json",
+        success: function (res) {
+            devedoresCarregados = res.dados || [];
+            renderizarDevedores();
+            const $tbody = $("#tbodyDevedores");
+
+            $("#resumoDevedores").text(formatarMoeda(res.total || 0));
+            $("#resumoDevedoresQtd").text(
+                (res.quantidade || 0) === 1 ? "1 pessoa" : (res.quantidade || 0) + " pessoas"
+            );
+
+            if (!dados.length) {
+                $tbody.html('<tr><td colspan="5" class="text-muted">Nenhum devedor ainda.</td></tr>');
+                return;
+            }
+
+            let html = "";
+            dados.forEach(function (item) {
+                html += "<tr>"
+                    + "<td>" + $("<div>").text(item.nome).html() + "</td>"
+                    + "<td>" + $("<div>").text(item.descricao).html() + "</td>"
+                    + '<td class="text-end">' + formatarMoeda(item.valor) + "</td>"
+                    + "<td>" + formatarDataDevedor(item.data) + "</td>"
+                    + '<td class="lista-acoes-botoes">'
+                    + '<button type="button" class="btn btn-acao-lista btn-acao-editar btnPagarDevedor" data-id="' + item.id + '" title="Marcar pago"><i class="bi bi-check-lg"></i></button>'
+                    + '<button type="button" class="btn btn-acao-lista btn-acao-excluir btnExcluirDevedor" data-id="' + item.id + '" title="Excluir"><i class="bi bi-trash"></i></button>'
+                    + "</td>"
+                    + "</tr>";
+            });
+            $tbody.html(html);
+
+        }
+    });
+}
+
+function renderizarDevedores() {
+    const termo = ($("#pesquisaDevedor").val() || "").trim().toLowerCase();
+    const dados = devedoresCarregados.filter(function (item) {
+        return String(item.nome || "").toLowerCase().indexOf(termo) !== -1;
+    });
+    const $tbody = $("#tbodyDevedores");
+    const $info = $("#pesquisaDevedorInfo");
+
+    if (!termo) {
+        $info.text("");
+    } else if (dados.length === 1) {
+        $info.text("1 encontrado");
+    } else {
+        $info.text(dados.length + " encontrados");
+    }
+
+    if (!devedoresCarregados.length) {
+        $tbody.html('<tr><td colspan="5" class="text-muted">Nenhum devedor ainda.</td></tr>');
+        return;
+    }
+
+    if (!dados.length) {
+        $tbody.html('<tr><td colspan="5" class="text-muted">Nenhum nome encontrado.</td></tr>');
+        return;
+    }
+
+    let html = "";
+    dados.forEach(function (item) {
+        html += "<tr>"
+            + '<td data-label="Nome">' + $("<div>").text(item.nome).html() + "</td>"
+            + '<td class="col-descricao" data-label="Descrição">' + $("<div>").text(item.descricao).html() + "</td>"
+            + '<td class="text-end" data-label="Valor">' + formatarMoeda(item.valor) + "</td>"
+            + '<td data-label="Data">' + formatarDataDevedor(item.data) + "</td>"
+            + '<td class="lista-acoes-botoes col-acoes" data-label="Ações">'
+            + '<button type="button" class="btn btn-acao-lista btn-acao-editar btnPagarDevedor" data-id="' + item.id + '" title="Marcar pago"><i class="bi bi-check-lg"></i></button>'
+            + '<button type="button" class="btn btn-acao-lista btn-acao-excluir btnExcluirDevedor" data-id="' + item.id + '" title="Excluir"><i class="bi bi-trash"></i></button>'
+            + "</td>"
+            + "</tr>";
+    });
+    $tbody.html(html);
+}
+
+$(document).on("input", "#pesquisaDevedor", function () {
+    renderizarDevedores();
+});
+
+function abrirModalDevedor() {
+    $("#devedorId").val("");
+    $("#devedorNome").val("");
+    $("#devedorDescricao").val("");
+    $("#devedorValor").val("");
+    $("#devedorValor").val("").data("digitos", "");
+    $("#devedorData").val(new Date().toISOString().slice(0, 10));
+
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("modalDevedor"));
+    modal.show();
+}
+
+$(document).on("click", "#btnNovoDevedor", function () {
+    abrirModalDevedor();
+});
+
+$(document).on("click", "#btnSalvarDevedor", function () {
+    const $botao = $(this);
+    $botao.prop("disabled", true);
+
+    $.ajax({
+        url: BASE_DEVEDORES + "/salvar.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            nome: $("#devedorNome").val(),
+            descricao: $("#devedorDescricao").val(),
+            valor: valorDevedorParaEnvio(),
+            data: $("#devedorData").val()
+        },
+        success: function (res) {
+            if (res.status !== "sucesso") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Não salvou",
+                    text: res.mensagem || "Confira os campos."
+                });
+                return;
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById("modalDevedor")).hide();
+            Swal.fire({
+                title: "Novo devedor",
+                text: "Registro salvo.",
+                imageUrl: "/Financeiro/assets/img/new%20member.jpeg",
+                imageAlt: "Novo devedor",
+                imageWidth: 280,
+                confirmButtonText: "Ok"
+            });
+            carregarDevedores();
+        },
+        complete: function () {
+            $botao.prop("disabled", false);
+        }
+    });
+});
+
+$(document).ready(function () {
+    if ($("#tabelaDevedores").length) {
+        carregarDevedores();
+    }
+});
+
+$(document).on("click", ".btnPagarDevedor", function () {
+    const id = $(this).data("id");
+
+    $.ajax({
+        url: BASE_DEVEDORES + "/pagar.php",
+        type: "POST",
+        dataType: "json",
+        data: { id: id },
+        success: function (res) {
+            if (res.status !== "sucesso") {
+                Swal.fire({ icon: "error", title: res.mensagem || "Não foi possível marcar como pago." });
+                return;
+            }
+            Swal.fire({
+                title: "Pago",
+                text: "Marcado como pago.",
+                imageUrl: "/Financeiro/assets/img/paid.jpeg",
+                imageAlt: "Pago",
+                imageWidth: 280,
+                confirmButtonText: "Ok"
+            });
+            carregarDevedores();
+        }
+    });
+});
+
+$(document).on("click", ".btnExcluirDevedor", function () {
+    const id = $(this).data("id");
+
+    Swal.fire({
+        title: "Excluir devedor?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, excluir",
+        cancelButtonText: "Cancelar"
+    }).then(function (result) {
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        $.ajax({
+            url: BASE_DEVEDORES + "/excluir.php",
+            type: "POST",
+            dataType: "json",
+            data: { id: id },
+            success: function (res) {
+                if (res.status !== "sucesso") {
+                    Swal.fire({ icon: "error", title: res.mensagem || "Não foi possível excluir." });
+                    return;
+                }
+                carregarDevedores();
+            }
+        });
+    });
+});
+// ========= PARCELADAS =========
+const BASE_PARCELADAS = "/Financeiro/parceladas";
+let parceladasCarregadas = [];
+
+function textoParcela(item) {
+    return String(item.parcela_atual) + "/" + String(item.parcela_total);
+}
+
+function renderizarParceladas() {
+    const $tbody = $("#tbodyParceladas");
+    const busca = ($("#pesquisaParcelada").val() || "").toLowerCase().trim();
+
+    const filtradas = parceladasCarregadas.filter(function (item) {
+        if (!busca) {
+            return true;
+        }
+
+        const situacao = item.quitada ? "quitada" : "ativa";
+        const texto = [
+            item.descricao,
+            item.categoria,
+            textoParcela(item),
+            situacao,
+            String(item.faltam)
+        ].join(" ").toLowerCase();
+
+        return texto.indexOf(busca) !== -1;
+    });
+
+    if (!parceladasCarregadas.length) {
+        $tbody.html(
+            '<tr><td colspan="5" class="text-muted">Nenhuma compra parcelada ainda.</td></tr>'
+        );
+        $("#pesquisaParceladaInfo").text("");
+        return;
+    }
+
+    if (!filtradas.length) {
+        $tbody.html(
+            '<tr><td colspan="5" class="text-muted">Nenhuma compra encontrada.</td></tr>'
+        );
+        $("#pesquisaParceladaInfo").text("0 resultado");
+        return;
+    }
+
+    $tbody.empty();
+
+    filtradas.forEach(function (item) {
+        const situacao = item.quitada ? "Quitada" : "Ativa";
+        const classeSituacao = item.quitada ? "quitada" : "ativa";
+        $tbody.append(
+            "<tr>" +
+            "<td data-label=\"Compra\">" + item.descricao + "</td>" +
+            "<td data-label=\"Parcela\">" + textoParcela(item) + "</td>" +
+            "<td data-label=\"Valor\" class=\"text-end\">" + formatarMoeda(item.valor_parcela) + "</td>" +
+            "<td data-label=\"Faltam\">" + item.faltam + "</td>" +
+            "<td data-label=\"Situação\"><span class=\"parcela-situacao " + classeSituacao + "\">" + situacao + "</span></td>" +
+            "</tr>"
+        );
+    });
+
+    $("#pesquisaParceladaInfo").text(
+        filtradas.length === parceladasCarregadas.length
+            ? ""
+            : filtradas.length + " de " + parceladasCarregadas.length
+    );
+}
+
+function carregarParceladas() {
+    if (!$("#tbodyParceladas").length) {
+        return;
+    }
+
+    $.ajax({
+        url: BASE_PARCELADAS + "/listar.php",
+        type: "GET",
+        dataType: "json",
+        success: function (res) {
+            parceladasCarregadas = res.dados || [];
+
+            $("#resumoParceladas").text(formatarMoeda(res.total || 0));
+            $("#resumoParceladasQtd").text(
+                (res.quantidade || 0) === 1
+                    ? "1 compra ativa"
+                    : (res.quantidade || 0) + " compras ativas"
+            );
+
+            renderizarParceladas();
+        }
+    });
+}
+
+$(document).on("input", "#pesquisaParcelada", function () {
+    renderizarParceladas();
+});
+
+$(document).ready(function () {
+    carregarParceladas();
 });
